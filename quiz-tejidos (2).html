@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz de Tejidos</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; }
+    .quiz-container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
+    .question { font-size: 18px; margin: 20px 0 10px; font-weight: bold; }
+    .option { display: block; margin: 8px 0; padding: 10px; background: #e0e0e0; border: none; border-radius: 5px; cursor: pointer; }
+    .option:hover { background: #d0d0d0; }
+    #score { font-size: 20px; text-align: center; margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quiz">
+    <div id="image-container"></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+  </div>
+  <div id="score"></div>
+
+  <script>
+    const quizData = Array.from({ length: 20 }, (_, i) => ({
+      image: `https://via.placeholder.com/600x300?text=Tejido+${i + 1}`,
+      options: ["Epitelial", "Muscular", "Conectivo", "Nervioso"],
+      answer: ["Epitelial", "Muscular", "Conectivo", "Nervioso"][i % 4]
+    }));
+
+    let current = 0, score = 0;
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const imageContainer = document.getElementById('image-container');
+    const scoreEl = document.getElementById('score');
+
+    function loadQuestion() {
+      const q = quizData[current];
+      questionEl.textContent = `Pregunta ${current + 1}: ¿Qué tipo de tejido observas?`;
+      imageContainer.innerHTML = `<img src="${q.image}" alt="Tejido ${current + 1}">`;
+      optionsEl.innerHTML = '';
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.className = 'option';
+        btn.onclick = () => checkAnswer(opt);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(ans) {
+      if (ans === quizData[current].answer) score++;
+      current++;
+      if (current < quizData.length) loadQuestion();
+      else showScore();
+    }
+
+    function showScore() {
+      document.getElementById('quiz').style.display = 'none';
+      scoreEl.innerHTML = `<h2>Tu puntaje final es ${score} de ${quizData.length}</h2>
+        <p>${score === 20 ? "¡Excelente!" : score >= 15 ? "¡Muy bien!" : score >= 10 ? "Bien, sigue estudiando" : "¡A seguir practicando!"}</p>`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
